@@ -1,28 +1,32 @@
 """CLI interface for myugpt project.
-
-Be creative! do whatever you want!
-
-- Install click or typer and create a CLI app
-- Use builtin argparse
-- Start a web application
-- Import things from your .base module
 """
+
+from myugpt.dataset import CodeContestsDataset
+from myugpt.gpt import MyuGPT
+from myugpt.mcts import mcts
+from myugpt.schema import CodingEnv
 
 
 def main():  # pragma: no cover
     """
     The main function executes on commands:
     `python -m myugpt` and `$ myugpt `.
-
-    This is your program's entry point.
-
-    You can change this function to do whatever you want.
-    Examples:
-        * Run a test suite
-        * Run a server
-        * Do some other stuff
-        * Run a command line application (Click, Typer, ArgParse)
-        * List all available tasks
-        * Run an application (Flask, FastAPI, Django, etc.)
     """
-    print("This will do something")
+    myugpt = MyuGPT()
+    dataset = CodeContestsDataset()
+
+    frame = dataset[0]
+
+    env = CodingEnv(
+        dataset_frame=frame,
+    )
+
+    print(env.prompt)
+
+    result = mcts(env, 10, myugpt)
+
+    print("=" * 20)
+    print("Final Result")
+    print("=" * 20)
+    print(result)
+    print("=" * 20)
