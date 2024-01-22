@@ -1,23 +1,40 @@
 import sys
 import traceback
-from typing import Any, Dict
 
 from myugpt.schema import ProgramInputs, ProgramOutputs, PythonCode, Validation
 
 
-def run_code(code: str, inputs: Dict[str, Any]) -> Any:
+def run_code(code: str, inputs: ProgramInputs) -> ProgramOutputs:
     """
     Run the provided Python code with the given inputs and return the output.
     """
-    try:
-        # Create a dictionary to serve as the local namespace for the
-        # exec function
-        local_namespace = inputs.copy()
-        exec(code, {}, local_namespace)
-        return local_namespace.get("output")
-    except Exception:
-        print("An error occurred while executing the code:", file=sys.stderr)
-        traceback.print_exc()
+    outputs = []
+    for input in inputs.data:
+        data = ""
+        try:
+            # Create a dictionary to serve as the local namespace for the
+            # exec function
+            local_namespace = {
+                "input": input,
+                "output": "",
+            }
+            exec(code, {}, local_namespace)
+            data_tmp = local_namespace.get("output")
+            if data_tmp is None:
+                data = ""
+            else:
+                data = str(data_tmp)
+        except Exception:
+            print(
+                "An error occurred while executing the code:", file=sys.stderr
+            )
+            data = traceback.format_exc()
+        finally:
+            print("Output:", data)
+            assert isinstance(data, str), "Output must be a string."
+            outputs.append(data)
+
+    return ProgramOutputs(data=outputs)
 
 
 def validate_code(
@@ -26,18 +43,25 @@ def validate_code(
     expected_outputs: ProgramOutputs,
 ) -> Validation:
     """Run the code with the inputs and compare the outputs"""
-    # Convert inputs.data from list to dictionary
-    inputs_dict = {f"input{i}": inp for i, inp in enumerate(inputs.data)}
-
     # Run the code
-    actual_outputs = run_code(code.data, inputs_dict)
+    actual_outputs = run_code(code.data, inputs)
+    print("Actual Outputs:", actual_outputs)
+    print("Expected Outputs:", expected_outputs.data)
+
+    correct_mask = [
+        actual == expected
+        for actual, expected in zip(
+            actual_outputs.data, expected_outputs.data
+        )
+    ]
+    all_correct = all(correct_mask)
 
     # Compare the actual outputs with the expected outputs
-    if actual_outputs == expected_outputs.data:
+    if all_correct:
         return Validation(outputs=expected_outputs)
     else:
         print("The actual outputs do not match the expected outputs.")
-        return Validation(outputs=ProgramOutputs(data=actual_outputs))
+        return Validation(outputs=actual_outputs)
 
 
 if __name__ == "__main__":

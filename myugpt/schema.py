@@ -69,15 +69,23 @@ class PythonCode(BaseModel):
 class ModelPrediction(BaseModel):
     """Model Prediction"""
 
-    code: PythonCode
-    predicted_outputs: Annotated[
-        ProgramOutputs,
+    thought_process: Annotated[
+        str,
         BeforeValidator(
             llm_validator(
-                "What do you think the outputs of your code will be?"
+                "Explain your thought process for solving the problem"
             )
         ),
     ]
+    code: PythonCode
+    # predicted_outputs: Annotated[
+    #     ProgramOutputs,
+    #     BeforeValidator(
+    #         llm_validator(
+    #             "What do you think the outputs of your code will be?"
+    #         )
+    #     ),
+    # ]
     score: Annotated[
         float,
         BeforeValidator(
@@ -96,11 +104,12 @@ class ModelPrediction(BaseModel):
     #     self._score = value
 
     def __str__(self):
-        rep = "Code:\n" + self.code.data + "\n"
+        rep = "ThoughtProcess:\n" + self.thought_process + "\n"
+        rep += "Code:\n" + self.code.data + "\n"
         rep += "=============\n"
-        for index, out in enumerate(self.predicted_outputs.data):
-            rep += f"PredictedOutputs[{index}]:\n" + out + "\n"
-            rep += "=============\n"
+        # for index, out in enumerate(self.predicted_outputs.data):
+        #     rep += f"PredictedOutputs[{index}]:\n" + out + "\n"
+        #     rep += "=============\n"
         rep += "=============\n"
         # rep += "Score:\n" + str(self.score) + "\n"
         # rep += "=============\n"
@@ -130,7 +139,7 @@ class CodingEnv(BaseModel):
         """Convert the code env to a prompt"""
         prompt = str(self.dataset_frame)
         prompt += "=============\n"
-        for index, model_prediction, validation in enumerate(
+        for index, (model_prediction, validation) in enumerate(
             zip(self.model_predictions, self.validations)
         ):
             prompt += f"Code[{index}]:\n" + str(model_prediction) + "\n"
@@ -143,9 +152,7 @@ class CodingEnv(BaseModel):
     def score(self):
         """Calculate the score"""
         res = 0
-        model_prediction_list = self.model_predictions[
-            -1
-        ].predicted_outputs.data
+        model_prediction_list = self.dataset_frame.expected_outputs.data
         validation_list = self.validations[-1].outputs.data
         for model_prediction, validation in zip(
             model_prediction_list, validation_list
@@ -167,5 +174,5 @@ class Node(BaseModel):
     parent: "Node" = None  # type: ignore
     children: List["Node"] = []  # type: ignore
     wins: float = 0
-    visits: int = 0
+    visits: int = 1
     untried_actions: List[ModelPrediction] = []
