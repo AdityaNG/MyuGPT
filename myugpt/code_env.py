@@ -50,9 +50,7 @@ def validate_code(
 
     correct_mask = [
         actual == expected
-        for actual, expected in zip(
-            actual_outputs.data, expected_outputs.data
-        )
+        for actual, expected in zip(actual_outputs.data, expected_outputs.data)
     ]
     all_correct = all(correct_mask)
 

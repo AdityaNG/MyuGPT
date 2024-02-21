@@ -4,6 +4,7 @@ GPT COder to solve competitive programming problems
 from typing import List
 
 import instructor
+from colorama import Fore, Style
 from openai import OpenAI
 
 from myugpt.schema import CodingEnv, ModelPrediction
@@ -29,96 +30,78 @@ main()
 ```
 """
 
+# MODEL_NAME = "codellama"
+MODEL_NAME = "mistral:instruct"
+
 
 class MyuGPT:
     def __init__(self, max_history=10):
-        self.client = instructor.patch(OpenAI())
+        self.client = instructor.patch(
+            OpenAI(
+                base_url="http://localhost:11434/v1/",
+                api_key="ollama",  # required, but unused
+            ),
+            # mode=instructor.Mode.JSON,
+        )
         self.previous_messages = []
         self.max_history = max_history
 
     def step(
         self,
         env: CodingEnv,
-        temperature: float = 0.9,
+        temperature: float = 0.5,
     ) -> ModelPrediction:
         """Step through the coding environment to solve the problem."""
         response = self.client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model=MODEL_NAME,
             temperature=temperature,
-            max_retries=2,
+            # max_retries=5,
             stream=True,
             messages=[
                 {
                     "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": env.prompt,
-                        },
-                    ],
+                    "content": env.prompt,
                 },
                 {
                     "role": "system",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": GPT_SYSTEM,
-                        }
-                    ],
-                }
+                    "content": GPT_SYSTEM,
+                },
             ],
             max_tokens=4096,
         )
 
         desc = ""
 
-        print("Response (Stream):")
+        print("Response:")
+
+        print(Fore.GREEN)
 
         for message in response:
             message_data = message.choices[0].delta.content
             if isinstance(message_data, str):
                 desc += message_data
                 print(message_data, end="")
-        
-        print()
-        print("="*20)
-        print("Response (Non-Stream):")
-        print(desc)
 
-        # desc = response.choices[0].text
+        print(Style.RESET_ALL)
+        print("=" * 20)
 
         gpt_prediction = self.client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model=MODEL_NAME,
             response_model=ModelPrediction,
             temperature=temperature,
-            max_retries=2,
+            max_retries=5,
             messages=[
                 {
                     "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": desc,
-                        },
-                    ],
+                    "content": desc,
                 },
                 {
                     "role": "system",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": GPT_SYSTEM,
-                        }
-                    ],
+                    "content": GPT_SYSTEM,
                 },
                 {
                     "role": "system",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": "Generate JSON response",
-                        }
-                    ],
+                    "content": "Generate JSON response",
                 },
             ],
             max_tokens=4096,
@@ -131,7 +114,7 @@ class MyuGPT:
     def sample(
         self,
         env: CodingEnv,
-        temperature: float = 0.9,
+        temperature: float = 0.5,
         num_samples: int = 1,
     ) -> List[ModelPrediction]:
         """Sample the coding environment to solve the problem."""

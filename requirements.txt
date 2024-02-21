@@ -18,3 +18,5 @@ instructor==0.4.2
 sentence-transformers
 pyarrow
 fastparquet
+langchain-community
+colorama
