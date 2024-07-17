@@ -1,8 +1,12 @@
 
 # MyuGPT
 
-[![codecov](https://codecov.io/gh/Cardinal-Robo-Taxi/MyuGPT/branch/main/graph/badge.svg?token=MyuGPT_token_here)](https://codecov.io/gh/Cardinal-Robo-Taxi/MyuGPT)
-[![CI](https://github.com/Cardinal-Robo-Taxi/MyuGPT/actions/workflows/main.yml/badge.svg)](https://github.com/Cardinal-Robo-Taxi/MyuGPT/actions/workflows/main.yml)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/MyuGPT)
+[![PyPI - Version](https://img.shields.io/pypi/v/MyuGPT)](https://pypi.org/project/MyuGPT/)
+[![codecov](https://codecov.io/gh/AdityaNG/MyuGPT/branch/main/graph/badge.svg?token=MyuGPT_token_here)](https://codecov.io/gh/AdityaNG/MyuGPT)
+[![CI](https://github.com/AdityaNG/MyuGPT/actions/workflows/main.yml/badge.svg)](https://github.com/AdityaNG/MyuGPT/actions/workflows/main.yml)
+[![GitHub License](https://img.shields.io/github/license/AdityaNG/MyuGPT)](https://github.com/AdityaNG/MyuGPT/blob/main/LICENSE)
+
 
 MyuZero Paper: https://arxiv.org/abs/1911.08265
 
