@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 from myugpt.helper import text_similarity
 
 # Sample texts for testing
@@ -30,7 +31,7 @@ def test_text_similarity_completely_different_texts():
 
 def test_invalid_input_none():
     """Test what happens if one of the inputs is None"""
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         text_similarity(None, text1)
 
 
