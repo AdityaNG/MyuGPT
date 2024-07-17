@@ -8,7 +8,7 @@ from myugpt.code_env import run_code, validate_code
 
 # sample code for testing
 test_code = """
-output = input[::-1];  # reverse the input string
+data_out = data_in[::-1];  # reverse the input string
 """
 
 
@@ -39,7 +39,7 @@ def test_validate_code_correct():
 
 def test_validate_code_incorrect():
     incorrect_code = """
-output = input  # no change to the input string
+data_out = data_in  # no change to the input string
 """
     model_pred = ModelPrediction(
         thought_process="no reverse", code=incorrect_code

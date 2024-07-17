@@ -8,8 +8,6 @@
 [![GitHub License](https://img.shields.io/github/license/AdityaNG/MyuGPT)](https://github.com/AdityaNG/MyuGPT/blob/main/LICENSE)
 
 
-MyuZero Paper: https://arxiv.org/abs/1911.08265
-
 MyuZero uses AI guided Monte Carlo tree search to make good decisions and hence play games like Atari, Go, Chess, Shogi at a super-human level.
 Tesla has shown that it has recently applied a similar approach of AI Guided Tree Search for Path Planning. The difference being, at the moment Tesla likely uses their hard-coded simulator for training (along with their large dataset of user data).
 LLMs can takes the a programming problem statement as input along with the current code and its output and produces new code to process as output
@@ -47,6 +45,13 @@ LeetCode Dataset
 - https://www.kaggle.com/datasets/gzipchrist/leetcode-problem-dataset
 - 1,825 Leetcode problems and was last updated in April 2021
 
+Setup datasets:
+
+```bash
+mkdir ~/Datasets
+cd ~/Datasets
+git lfs clone https://huggingface.co/datasets/deepmind/code_contests
+```
 
 ## Usage
 

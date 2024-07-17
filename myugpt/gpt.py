@@ -15,17 +15,26 @@ statement (along with the previous list of steps taken to solve the problem, \
 if applicable). You will produce the next step as python code to solve the \
 problem. Remember to think step by step, you will be given multiple shots!
 
-The input is provided as a string in the global input varriable.
-The output is expected as a string in the global output varriable.
+The input is provided as a string in the global data_in varriable.
+The output is expected as a string in the global data_out varriable.
 
 ```python3
-global input: str
-global output: str
+# imports if necessary
 
-def main():
+# global inputs and outputs
+global data_in
+global data_out
+data_in: str
+data_out: str
+
+# helper functions if necessary
+
+# main function
+def main() -> None:
     # Write your code here
     pass
 
+# initiate main()
 main()
 ```
 """
@@ -65,15 +74,16 @@ class MyuGPT:
 
         print("Response:")
 
-        print(Fore.GREEN)
+        try:
+            print(Fore.GREEN)
 
-        for message in response:
-            message_data = message.choices[0].delta.content
-            if isinstance(message_data, str):
-                desc += message_data
-                print(message_data, end="")
-
-        print(Style.RESET_ALL)
+            for message in response:
+                message_data = message.choices[0].delta.content
+                if isinstance(message_data, str):
+                    desc += message_data
+                    print(message_data, end="")
+        finally:
+            print(Style.RESET_ALL)
         print("=" * 20)
 
         gpt_prediction = self.client.chat.completions.create(

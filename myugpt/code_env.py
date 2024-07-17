@@ -20,11 +20,11 @@ def run_code(code: str, inputs: ProgramInputs) -> ProgramOutputs:
             # Create a dictionary to serve as the local namespace for the
             # exec function
             local_namespace = {
-                "input": input,
-                "output": "",
+                "data_in": input,
+                "data_out": "",
             }
             exec(code, {}, local_namespace)
-            data_tmp = local_namespace.get("output")
+            data_tmp = local_namespace.get("data_out")
             if data_tmp is None:
                 data = ""
             else:

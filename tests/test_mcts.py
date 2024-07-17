@@ -22,13 +22,13 @@ class MockGPT(MyuGPT):
         # Mocking GPT response
         return ModelPrediction(
             thought_process="Mock thought process.",
-            code="output = input.strip().upper()",
+            code="data_out = data_in.strip().upper()",
         )
 
 
 # Test run_code function
 def test_run_code():
-    code = """output = input.strip().upper()"""
+    code = """data_out = data_in.strip().upper()"""
     inputs = ProgramInputs(data=["  test  ", "hello ", "world "])
     expected_outputs = ProgramOutputs(data=["TEST", "HELLO", "WORLD"])
 
@@ -41,7 +41,7 @@ def test_run_code():
 
 # Test validate_code function
 def test_validate_code():
-    code = """output = input.strip().upper()"""
+    code = """data_out = data_in.strip().upper()"""
     model_pred = ModelPrediction(
         thought_process="Mock thought process.", code=code
     )
