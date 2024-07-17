@@ -43,69 +43,37 @@ class DatasetFrame(BaseModel):
         return rep
 
 
-class PythonCode(BaseModel):
-    """Python Code"""
+class ModelPrediction(BaseModel):
+    """Model Prediction"""
 
-    data: Annotated[
+    thought_process: str
+    code: Annotated[
         str, BeforeValidator(llm_validator("Write a valid Python code"))
     ]
 
-    @validator("data")
+    @validator("code")
     def is_valid_python(cls, v):
         try:
             ast.parse(v)
         except SyntaxError as se:
             raise ValueError(
-                "Invalid Python code:\n",
-                v,
-                "SyntaxError:",
-                se.msg,
-                "at line",
-                se.lineno,
+                f"Invalid Python code:\n"
+                f"SyntaxError:"
+                f"{se.msg}"
+                f"at line {se.lineno}"
             )
         return v
 
-
-class ModelPrediction(BaseModel):
-    """Model Prediction"""
-
-    thought_process: Annotated[
-        str,
-        BeforeValidator(
-            llm_validator(
-                "Explain your thought process for solving the problem"
-            )
-        ),
-    ]
-    code: PythonCode
-    # predicted_outputs: Annotated[
-    #     ProgramOutputs,
+    # score: Annotated[
+    #     float,
     #     BeforeValidator(
-    #         llm_validator(
-    #             "What do you think the outputs of your code will be?"
-    #         )
+    #         llm_validator("Score the correctness of your code (0 to 100)")
     #     ),
     # ]
-    score: Annotated[
-        float,
-        BeforeValidator(
-            llm_validator("Score the correctness of your code (0 to 100)")
-        ),
-    ]
-
-    # @property
-    # def score(self) -> float:
-    #     return self._score
-
-    # @score.setter
-    # def score(self, value: float):
-    #     if value < 0 or value > 100:
-    #         raise ValueError("Score must be between 0 and 100")
-    #     self._score = value
 
     def __str__(self):
         rep = "ThoughtProcess:\n" + self.thought_process + "\n"
-        rep += "Code:\n" + self.code.data + "\n"
+        rep += "Code:\n" + self.code + "\n"
         rep += "=============\n"
         # for index, out in enumerate(self.predicted_outputs.data):
         #     rep += f"PredictedOutputs[{index}]:\n" + out + "\n"
@@ -132,7 +100,7 @@ class CodingEnv(BaseModel):
     model_predictions: List[ModelPrediction] = []
 
     # From Validation
-    validations: List[Validation] = []
+    validation: Validation = Validation(outputs=ProgramOutputs(data=[]))
 
     @property
     def prompt(self):
@@ -140,7 +108,7 @@ class CodingEnv(BaseModel):
         prompt = str(self.dataset_frame)
         prompt += "=============\n"
         for index, (model_prediction, validation) in enumerate(
-            zip(self.model_predictions, self.validations)
+            zip(self.model_predictions, self.validation.outputs.data)
         ):
             prompt += f"Code[{index}]:\n" + str(model_prediction) + "\n"
             prompt += "=============\n"
@@ -153,15 +121,22 @@ class CodingEnv(BaseModel):
         """Calculate the score"""
         res = 0
         model_prediction_list = self.dataset_frame.expected_outputs.data
-        validation_list = self.validations[-1].outputs.data
+        validation_list = self.validation.outputs.data
+
+        assert len(model_prediction_list) == len(
+            validation_list
+        ), f"{len(model_prediction_list)} != {len(validation_list)}"
+
         for model_prediction, validation in zip(
             model_prediction_list, validation_list
         ):
-            res += text_similarity(
+            frame_score = text_similarity(
                 model_prediction,
                 validation,
             )
-        res = res / len(self.model_predictions)
+            assert 0 <= frame_score <= 100
+            res += frame_score
+        res = res / len(model_prediction_list)
         return res
 
 

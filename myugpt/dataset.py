@@ -5,11 +5,11 @@ from typing import List, Union
 import pandas as pd
 
 from myugpt.schema import DatasetFrame, ProgramInputs, ProgramOutputs
+from myugpt.settings import settings
 
-DATASET_ROOT = os.path.join(
-    os.path.expanduser("~"), "Datasets", "code_contests", "data"
+CODE_CONTESTS_DATASETS = glob(
+    os.path.join(settings.CODE_CONTESTS, "*.parquet")
 )
-DATASETS = glob(os.path.join(DATASET_ROOT, "*.parquet"))
 
 
 class Dataset:
@@ -35,7 +35,7 @@ class Dataset:
 class CodeContestsDataset(Dataset):
     def __init__(
         self,
-        dataset_path: str = DATASETS[0],
+        dataset_path: str = CODE_CONTESTS_DATASETS[0],
     ):
         self.dataset_path = dataset_path
         self.df = pd.read_parquet(self.dataset_path, engine="pyarrow")

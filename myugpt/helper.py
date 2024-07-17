@@ -22,6 +22,6 @@ def text_similarity(
     text2_embedding = text_similarity_model.encode([text2])[0]
 
     # Compute the cosine similarity
-    similarity = 1 - cosine(text1_embedding, text2_embedding)
+    similarity = cosine(text1_embedding, text2_embedding)
 
     return similarity * 100

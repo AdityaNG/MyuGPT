@@ -13,7 +13,7 @@ GPT_SYSTEM = """You are MyuGPT, an advanced coding chat bot that solves \
 competitive programming problems. You will be provided with a problem \
 statement (along with the previous list of steps taken to solve the problem, \
 if applicable). You will produce the next step as python code to solve the \
-problem.
+problem. Remember to think step by step, you will be given multiple shots!
 
 The input is provided as a string in the global input varriable.
 The output is expected as a string in the global output varriable.
@@ -31,17 +31,16 @@ main()
 """
 
 # MODEL_NAME = "codellama"
-MODEL_NAME = "mistral:instruct"
+MODEL_NAME = "gpt-4o"
+# MODEL_NAME = "mistral:instruct"
+# MODEL_NAME = "mixtral:8x7b-instruct-v0.1-q2_K"
 
 
 class MyuGPT:
     def __init__(self, max_history=10):
         self.client = instructor.patch(
-            OpenAI(
-                base_url="http://localhost:11434/v1/",
-                api_key="ollama",  # required, but unused
-            ),
-            # mode=instructor.Mode.JSON,
+            OpenAI(),
+            mode=instructor.Mode.JSON,
         )
         self.previous_messages = []
         self.max_history = max_history
@@ -89,7 +88,7 @@ class MyuGPT:
             model=MODEL_NAME,
             response_model=ModelPrediction,
             temperature=temperature,
-            max_retries=5,
+            max_retries=2,
             messages=[
                 {
                     "role": "user",
@@ -101,10 +100,10 @@ class MyuGPT:
                 },
                 {
                     "role": "system",
-                    "content": "Generate JSON response",
+                    "content": "Generate JSON response\n" + "```json\n\n```",
                 },
             ],
-            max_tokens=4096,
+            # max_tokens=4096,
         )
 
         print(gpt_prediction)
@@ -145,5 +144,8 @@ if __name__ == "__main__":
         dataset_frame=frame,
     )
 
-    print(env.prompt)
+    print("env.prompt", env.prompt)
+
     prediction = gpt.step(env)
+
+    print("prediction", prediction)

@@ -30,12 +30,11 @@ def validate_and_score(
     node: Node,
     action: ModelPrediction,
 ):
-    code = action.code
     inputs = node.state.dataset_frame.inputs
     expected_outputs = node.state.dataset_frame.expected_outputs
     # Validate the code and calculate the score
     validation = validate_code(
-        code,
+        action,
         inputs,
         expected_outputs,
     )
@@ -45,17 +44,15 @@ def validate_and_score(
     next_state.model_predictions.append(
         action,
     )
-    next_state.validations.append(
-        validation,
-    )
+    next_state.validation = validation
     reward = next_state.score
 
     return next_state, reward
 
 
-def expand(node: Node, gpt: MyuGPT):
+def expand(node: Node, gpt: MyuGPT, expand_size: int):
     # Add all possible next states as children to the node
-    actions = gpt.sample(node.state)
+    actions = gpt.sample(node.state, num_samples=expand_size)
     node.untried_actions = actions
 
     for action in node.untried_actions:
@@ -99,16 +96,16 @@ def backpropagate(node: Node, result: int):
         node = node.parent
 
 
-def mcts(root_env: CodingEnv, iterations: int, gpt: MyuGPT):
+def mcts(root_env: CodingEnv, iterations: int, gpt: MyuGPT, expand_size: int):
     root = Node(state=root_env)
-    expand(root, gpt)
+    expand(root, gpt, expand_size=expand_size)
     for _ in range(iterations):
         # Selection
         leaf = uct_select(root)
 
         # Expansion
         if not is_terminal(leaf):
-            expand(leaf, gpt)
+            expand(leaf, gpt, expand_size=expand_size)
 
         # Simulation
         simulation_result = simulate(leaf, gpt)

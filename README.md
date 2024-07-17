@@ -12,6 +12,25 @@ ChatGPT is a generative AI model which takes the a programming problem statement
 
 There is potential to build a super human coding agent using ChatGPT and MyuZero
 
+# Inspiration
+
+![MyuZero](media/MyuZero.png)
+
+To summarise the MyuZero Paper, there are three neural networks:
+- h(img) -> S : Environment Encoder takes an image as input and provides a latent space representation as output
+- f(S) -> P,V : Policy-Value Function takes the environment state as input and produces a distribution of policies to take P, and their corresponding future reward value V.
+- g(Si, Ai) -> Ri Si+1 : Dynamics Model takes a state action pair (S, A) for a given frame i as input and produces the next state Si+1 along with the reward Ri for the action Ai.
+- The Environment Encoder is used to convert the sensor reading to a latent space. The Policy-Value Function is used to produce good candidate branches to explore further in the Monte Carlo Tree Search. The Dynamics Model facilitates the system to look into the future. Thus the the networks along with the Monte Carlo Tree Search framework is able to make an informed decision by looking down branches with potential and picking the one with the highest reward.
+
+In the context of ChatGPT as a coding agent, this is how it would translate:
+- h(env) -> S : Environment Encoder takes the problem statement, current code written and the output of the compiled code and wraps it all up into a text prompt for GPT
+- f(S) -> P,V : Policy-Value Function is ChatGPT. We would have to prompt it to produce a value as well (ask it to score itself). By varying the temperature of the model, we can sample multiple possible chains of thought and follow the most likely path
+- g(Si, Ai) -> Ri Si+1 : Dynamics Model is the code interpreter which the code request from GPT as output, runs the code and updates the environment (new code and output) Monte Carlo Tree search, guided by the three networks will be used to explore potential trajectories the car can take in the near future (say 1 to 5 seconds) and the trajectory with the highest reward is picked.
+
+What would we have to look into:
+1. Prompt engineering to translate the environment to a prompt
+2. We will have to look into how this reward is calulated
+
 # Datasets
 
 AlphaCode's Code Contests Dataset

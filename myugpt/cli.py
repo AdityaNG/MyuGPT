@@ -5,6 +5,7 @@ from myugpt.dataset import CodeContestsDataset
 from myugpt.gpt import MyuGPT
 from myugpt.mcts import mcts
 from myugpt.schema import CodingEnv
+from myugpt.settings import settings
 
 
 def main():  # pragma: no cover
@@ -23,7 +24,7 @@ def main():  # pragma: no cover
 
     print(env.prompt)
 
-    result = mcts(env, 10, myugpt)
+    result = mcts(env, settings.MCTS_ITERS, myugpt, settings.MCTS_EXPAND_SIZE)
 
     print("=" * 20)
     print("Final Result")

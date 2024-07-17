@@ -1,7 +1,12 @@
 import sys
 import traceback
 
-from myugpt.schema import ProgramInputs, ProgramOutputs, PythonCode, Validation
+from myugpt.schema import (
+    ModelPrediction,
+    ProgramInputs,
+    ProgramOutputs,
+    Validation,
+)
 
 
 def run_code(code: str, inputs: ProgramInputs) -> ProgramOutputs:
@@ -38,13 +43,14 @@ def run_code(code: str, inputs: ProgramInputs) -> ProgramOutputs:
 
 
 def validate_code(
-    code: PythonCode,
+    model_pred: ModelPrediction,
     inputs: ProgramInputs,
     expected_outputs: ProgramOutputs,
 ) -> Validation:
     """Run the code with the inputs and compare the outputs"""
     # Run the code
-    actual_outputs = run_code(code.data, inputs)
+    code = model_pred.code
+    actual_outputs = run_code(code, inputs)
     print("Actual Outputs:", actual_outputs)
     print("Expected Outputs:", expected_outputs.data)
 
