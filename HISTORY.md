@@ -5,6 +5,12 @@ Changelog
 (unreleased)
 ------------
 - Docs(README): global links for pipy. [Aditya NG]
+
+
+0.1.0 (2024-07-17)
+------------------
+- Release: version 0.1.0 🚀 [Aditya NG]
+- Docs(README): global links for pipy. [Aditya NG]
 - Merge pull request #1 from
   AdityaNG/dependabot/github_actions/actions/setup-python-5. [Aditya]
 
