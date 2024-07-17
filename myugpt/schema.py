@@ -1,12 +1,11 @@
 """
 Models
 """
+
 import ast
 from typing import List
 
-from instructor import llm_validator
-from pydantic import BaseModel, BeforeValidator, validator
-from typing_extensions import Annotated
+from pydantic import BaseModel, field_validator
 
 from myugpt.helper import text_similarity
 
@@ -47,11 +46,22 @@ class ModelPrediction(BaseModel):
     """Model Prediction"""
 
     thought_process: str
-    code: Annotated[
-        str, BeforeValidator(llm_validator("Write a valid Python code"))
-    ]
+    code: str
+    # code: Annotated[
+    #     str,
+    #     BeforeValidator(
+    #         llm_validator(
+    #             "Write a valid Python code, "
+    #             + "don't worry about varriable declatation or "
+    #             + "logical errors, "
+    #             + "don't worry about missing the necessary context and "
+    #             + "structure to be considered valid Python code",
+    #             openai_client,
+    #         )
+    #     ),
+    # ]
 
-    @validator("code")
+    @field_validator("code")
     def is_valid_python(cls, v):
         try:
             ast.parse(v)
@@ -67,7 +77,10 @@ class ModelPrediction(BaseModel):
     # score: Annotated[
     #     float,
     #     BeforeValidator(
-    #         llm_validator("Score the correctness of your code (0 to 100)")
+    #         llm_validator(
+    #             "Score the correctness of your code (0 to 100)",
+    #             openai_client,
+    #         )
     #     ),
     # ]
 

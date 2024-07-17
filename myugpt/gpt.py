@@ -1,12 +1,12 @@
 """
-GPT COder to solve competitive programming problems
+GPT Coder to solve competitive programming problems
 """
+
 from typing import List
 
-import instructor
 from colorama import Fore, Style
-from openai import OpenAI
 
+from myugpt.llm import MODEL_NAME, openai_client
 from myugpt.schema import CodingEnv, ModelPrediction
 
 GPT_SYSTEM = """You are MyuGPT, an advanced coding chat bot that solves \
@@ -30,18 +30,10 @@ main()
 ```
 """
 
-# MODEL_NAME = "codellama"
-MODEL_NAME = "gpt-4o"
-# MODEL_NAME = "mistral:instruct"
-# MODEL_NAME = "mixtral:8x7b-instruct-v0.1-q2_K"
-
 
 class MyuGPT:
     def __init__(self, max_history=10):
-        self.client = instructor.patch(
-            OpenAI(),
-            mode=instructor.Mode.JSON,
-        )
+        self.client = openai_client
         self.previous_messages = []
         self.max_history = max_history
 

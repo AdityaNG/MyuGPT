@@ -8,7 +8,7 @@ from myugpt.code_env import run_code, validate_code
 
 # sample code for testing
 test_code = """
-output = input[::-1]  # reverse the input string
+output = input[::-1];  # reverse the input string
 """
 
 
