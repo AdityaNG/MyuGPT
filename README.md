@@ -14,7 +14,7 @@ There is potential to build a super human coding agent using LLMs and MyuZero
 
 # Inspiration
 
-![MyuZero](media/MyuZero.png)
+![MyuZero](https://github.com/AdityaNG/MyuGPT/raw/main/media/MyuZero.png)
 
 To summarise the MyuZero Paper, there are three neural networks:
 - h(img) -> S : Environment Encoder takes an image as input and provides a latent space representation as output
