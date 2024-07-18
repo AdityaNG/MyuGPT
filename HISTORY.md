@@ -4,6 +4,14 @@ Changelog
 
 (unreleased)
 ------------
+- Feat(gpt.py): working. [Aditya NG]
+- Fix(myugpt/gpt.py): replaced inputs,outputs with data_in,data_out.
+  [Aditya NG]
+
+
+0.1.1 (2024-07-17)
+------------------
+- Release: version 0.1.1 🚀 [Aditya NG]
 - Docs(README): global links for pipy. [Aditya NG]
 
 
