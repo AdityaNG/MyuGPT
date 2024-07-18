@@ -1,10 +1,11 @@
 """
-Models
+Model Schemas
 """
 
 import ast
 from typing import List
 
+from colorama import Fore, Style
 from pydantic import BaseModel, field_validator
 
 from myugpt.helper import text_similarity
@@ -40,6 +41,19 @@ class DatasetFrame(BaseModel):
             rep += "=============\n"
 
         return rep
+
+
+MODEL_PREDICTION_STR = """
+=============
+ThoughtProcess:{thought_process_color}
+{thought_process}
+{reset_color}
+=============
+Code:{code_color}
+{code}
+{reset_color}
+=============
+"""
 
 
 class ModelPrediction(BaseModel):
@@ -85,15 +99,13 @@ class ModelPrediction(BaseModel):
     # ]
 
     def __str__(self):
-        rep = "ThoughtProcess:\n" + self.thought_process + "\n"
-        rep += "Code:\n" + self.code + "\n"
-        rep += "=============\n"
-        # for index, out in enumerate(self.predicted_outputs.data):
-        #     rep += f"PredictedOutputs[{index}]:\n" + out + "\n"
-        #     rep += "=============\n"
-        rep += "=============\n"
-        # rep += "Score:\n" + str(self.score) + "\n"
-        # rep += "=============\n"
+        rep = MODEL_PREDICTION_STR.format(
+            thought_process=self.thought_process,
+            code=self.code,
+            thought_process_color=str(Fore.RED),
+            code_color=str(Fore.GREEN),
+            reset_color=str(Style.RESET_ALL),
+        )
         return rep
 
 

@@ -1,5 +1,4 @@
-"""
-LLM
+"""LLM Utilities
 """
 
 import instructor

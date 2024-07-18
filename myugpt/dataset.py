@@ -1,3 +1,9 @@
+"""Dataset iterators
+
+CodeForces Dataset
+- https://www.kaggle.com/datasets/immortal3/codeforces-dataset
+"""
+
 import os
 from glob import glob
 from typing import List, Union

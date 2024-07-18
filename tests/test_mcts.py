@@ -1,4 +1,3 @@
-import pytest
 from myugpt.code_env import run_code, validate_code
 from myugpt.schema import (
     ProgramInputs,
@@ -10,8 +9,7 @@ from myugpt.schema import (
 )
 from myugpt.mcts import uct_select, expand, is_terminal, simulate, mcts
 from myugpt.schema import CodingEnv, ModelPrediction, Node
-from myugpt.gpt import MyuGPT, GPT_SYSTEM
-from unittest.mock import MagicMock
+from myugpt.gpt import MyuGPT
 
 
 # Mock for the Testing

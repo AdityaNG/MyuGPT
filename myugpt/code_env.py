@@ -1,3 +1,6 @@
+"""CodingEnv helper functions
+"""
+
 import sys
 import traceback
 
@@ -23,7 +26,7 @@ def run_code(code: str, inputs: ProgramInputs) -> ProgramOutputs:
                 "data_in": input,
                 "data_out": "",
             }
-            exec(code, {}, local_namespace)
+            exec(code, globals(), local_namespace)
             data_tmp = local_namespace.get("data_out")
             if data_tmp is None:
                 data = ""

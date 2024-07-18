@@ -19,23 +19,22 @@ The input is provided as a string in the global data_in varriable.
 The output is expected as a string in the global data_out varriable.
 
 ```python3
-# imports if necessary
-
-# global inputs and outputs
-global data_in
-global data_out
-data_in: str
-data_out: str
-
-# helper functions if necessary
-
 # main function
-def main() -> None:
+def main(data_in: str) -> str:
     # Write your code here
-    pass
 
-# initiate main()
-main()
+    # imports only at function level
+    import math
+
+    # helper functions if necessary
+
+    data_out = ""
+
+    return data_out
+
+# global inputs and outputs: data_in, data_out
+# call the main function
+data_out = main(data_in)
 ```
 """
 
@@ -75,7 +74,7 @@ class MyuGPT:
         print("Response:")
 
         try:
-            print(Fore.GREEN)
+            print(Fore.BLUE)
 
             for message in response:
                 message_data = message.choices[0].delta.content

@@ -1,3 +1,6 @@
+"""Settings from environment variables
+"""
+
 import os
 
 DEFAULT_CODE_CONTESTS = os.path.join(
