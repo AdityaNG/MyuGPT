@@ -69,7 +69,3 @@ def validate_code(
     else:
         print("The actual outputs do not match the expected outputs.")
         return Validation(outputs=actual_outputs)
-
-
-if __name__ == "__main__":
-    pass

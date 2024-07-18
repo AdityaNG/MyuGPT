@@ -142,7 +142,7 @@ class CodingEnv(BaseModel):
         return prompt
 
     @property
-    def score(self):
+    def score(self) -> int:
         """Calculate the score"""
         res = 0
         model_prediction_list = self.dataset_frame.expected_outputs.data
@@ -161,8 +161,8 @@ class CodingEnv(BaseModel):
             )
             assert 0 <= frame_score <= 100
             res += frame_score
-        res = res / len(model_prediction_list)
-        return res
+        res_int = int(res / len(model_prediction_list))
+        return res_int
 
 
 # @no_type_check
@@ -173,6 +173,6 @@ class Node(BaseModel):
 
     parent: "Node" = None  # type: ignore
     children: List["Node"] = []  # type: ignore
-    wins: float = 0
+    wins: int = 0
     visits: int = 1
     untried_actions: List[ModelPrediction] = []

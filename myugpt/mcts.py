@@ -2,6 +2,7 @@
 
 import math
 import random
+from typing import Tuple
 
 import numpy as np
 
@@ -30,7 +31,7 @@ def uct_select(node: Node, exploration_weight=1.4) -> Node:
 def validate_and_score(
     node: Node,
     action: ModelPrediction,
-):
+) -> Tuple[CodingEnv, int]:
     inputs = node.state.dataset_frame.inputs
     expected_outputs = node.state.dataset_frame.expected_outputs
     # Validate the code and calculate the score
@@ -66,12 +67,12 @@ def expand(node: Node, gpt: MyuGPT, expand_size: int):
         node.children.append(child_node)
 
 
-def is_terminal(node: Node):
+def is_terminal(node: Node) -> bool:
     # Check if the node is terminal node (i.e. no more actions possible)
-    return np.isclose(node.state.score, 100.0, atol=1e-2)
+    return bool(np.isclose(node.state.score, 100, atol=1e-2))
 
 
-def simulate(node: Node, gpt: MyuGPT):
+def simulate(node: Node, gpt: MyuGPT) -> int:
     # Simulate a random playout from the node's state until a result is reached
     current_node = node
     while not is_terminal(current_node):
@@ -97,7 +98,9 @@ def backpropagate(node: Node, result: int):
         node = node.parent
 
 
-def mcts(root_env: CodingEnv, iterations: int, gpt: MyuGPT, expand_size: int):
+def mcts(
+    root_env: CodingEnv, iterations: int, gpt: MyuGPT, expand_size: int
+) -> CodingEnv:
     root = Node(state=root_env)
     expand(root, gpt, expand_size=expand_size)
     for _ in range(iterations):
